@@ -1,0 +1,222 @@
+/* ===============================
+   GLOBAL
+================================ */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  /* by this container class occupy the full height */
+  flex: 1;
+}
+
+/* ===============================
+   NAVBAR
+================================ */
+.navbar {
+  height: 5rem;
+}
+
+.fa-compass {
+  color: rgb(245, 20, 20);
+  font-size: 2rem;
+}
+
+.nav-link {
+  color: #222222 !important;
+}
+
+/* ===============================
+   FOOTER
+================================ */
+.f-info-links {
+  width: 100%;
+  text-align: center;
+}
+
+.f-info-links a {
+  text-decoration: none;
+  color: #222222;
+}
+
+.f-info-links a:hover {
+  text-decoration: underline;
+}
+
+.f-info-socials {
+  width: 100%;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.f-info-socials i {
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.f-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 8rem;
+  background-color: #ebebeb;
+  flex-direction: column;
+  align-items: center;
+}
+
+.company-name {
+  margin-bottom: 1rem;
+}
+
+/* ===============================
+   CARDS
+================================ */
+.listing-card {
+  border: none !important;
+  margin-bottom: 2rem;
+  width: 100%;
+  margin-right: 2rem;
+}
+
+.card-img-overlay {
+  opacity: 0;
+}
+
+.card:hover .card-img-overlay {
+  opacity: 0.2;
+  background-color: white;
+}
+
+.card-img-top {
+  width: 100% !important;
+  border-radius: 1rem !important;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 0 !important;
+}
+
+.card-text p {
+  font-weight: 800 !important;
+}
+
+/* ===============================
+   NEW PAGE
+================================ */
+.add-btn {
+  background-color: rgb(245, 20, 20) !important;
+  border: none !important;
+}
+
+/* ===============================
+   SHOW PAGE
+================================ */
+.show-img {
+  height: 30vh !important;
+}
+
+.btns {
+  display: flex;
+  gap: 6px;
+}
+
+/* ===============================
+   LOGIN / EDIT PAGE
+================================ */
+.edit-preview-img {
+  width: 25%;
+  max-height: 200px; /* perfect for edit form */
+  object-fit: cover; /* crops nicely */
+}
+
+/* ===============================
+   NAVBAR ANIMATION
+================================ */
+.custom-navbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+/* BRAND ICON */
+.brand-logo {
+  font-size: 1.6rem;
+  color: #ff385c;
+  transition: transform 0.4s ease;
+}
+
+.brand-logo:hover {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* NAV LINKS */
+.nav-links .nav-link {
+  position: relative;
+  margin: 0 0.6rem;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+/* UNDERLINE ANIMATION */
+.nav-links .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #ff385c, #ff7a18);
+  transition: width 0.3s ease;
+}
+
+.nav-links .nav-link:hover {
+  color: #ff385c;
+}
+
+.nav-links .nav-link:hover::after {
+  width: 100%;
+}
+
+/* AUTH BUTTONS */
+.auth-links .btn-link {
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.auth-links .login {
+  background: linear-gradient(135deg, #ff385c, #ff7a18);
+  color: #fff !important;
+}
+
+.auth-links .login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 56, 92, 0.4);
+}
+
+/* LOGOUT */
+.auth-links .logout {
+  color: #ff385c;
+  font-weight: 500;
+}
+
+.auth-links .logout:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   MOBILE FIX
+================================ */
+@media (max-width: 768px) {
+  .nav-links .nav-link {
+    margin: 0.4rem 0;
+  }
+}
