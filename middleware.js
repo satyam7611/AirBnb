@@ -52,15 +52,33 @@ module.exports.validateReview=(req,res,next)=>{
   }
 }
 
-module.exports.isReviewAuthor=async (req,res,next)=>{
-      const {id, reviewID} = req.params;
-    const cleanID = reviewID.trim();
-    const listingID=id.trim();
+// module.exports.isReviewAuthor=async (req,res,next)=>{
+//       const {id, reviewID} = req.params;
+//     const cleanID = reviewID.trim();
+//     const listingID=id.trim();
 
-    const review = await Review.findById(cleanID);
-    if(! review.author._id.equals(res.locals.currUser._id)){
-      req.flash("error","You are not owner of the review!")
-       return   res.redirect(`/listings/${listingID}`);
-    }
-    next();
-}
+//     const review = await Review.findById(cleanID);
+//     if(! review.author._id.equals(res.locals.currUser._id)){
+//       req.flash("error","You are not owner of the review!")
+//        return   res.redirect(`/listings/${listingID}`);
+//     }
+//     next();
+// }
+module.exports.isReviewAuthor = async (req, res, next) => {
+  const { id, reviewID } = req.params;
+
+  const review = await Review.findById(reviewID);
+
+  if (!review) {
+    req.flash("error", "Review not found!");
+    return res.redirect(`/listings/${id}`);
+  }
+
+  // ALWAYS use req.user for auth
+  if (!review.author.equals(req.user._id)) {
+    req.flash("error", "You are not the author of this review!");
+    return res.redirect(`/listings/${id}`);
+  }
+
+  next();
+};
