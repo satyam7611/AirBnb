@@ -4,7 +4,7 @@ A full-stack, production-ready clone of Airbnb featuring property listings, revi
 
 ## 🚀 Features
 
-- **User Authentication:** Secure signup and login using Passport.js (Local Strategy & Session-based authentication).
+- **User Authentication:** Secure Signup and login using Passport.js (Local Strategy & Session-based authentication).
 - **Property Listings:** Users can view, create, edit, and delete accommodation listings.
 - **Reviews & Ratings:** Authenticated users can leave reviews and ratings on properties.
 - **Image Uploads:** Cloud storage integration via Cloudinary for seamless property image uploads.
