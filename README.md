@@ -13,7 +13,6 @@ A full-stack, production-ready clone of Airbnb featuring property listings, revi
 - **Database:** MongoDB integration using Mongoose models.
 
 ## 🛠️ Tech Stack
-
 ### Frontend
 - **Framework:** Next.js 16 (App Router)
 - **Library:** React 19
