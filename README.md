@@ -17,7 +17,7 @@ A full-stack, production-ready clone of Airbnb featuring property listings, revi
 ### Frontend
 - **Framework:** Next.js 16 (App Router)
 - **Library:** React 19
-- **Styling:** Tailwind CSS 4
+- **Styling:** Tailwind CSS 
 - **API Requests:** Axios
 
 ### Backend
