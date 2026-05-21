@@ -1,6 +1,6 @@
 # 🏡 Airbnb Clone
 
-A full-stack, production-ready clone of Airbnb featuring property listings, reviews, user authentication, and image uploads. The application is built with a modern Next.js frontend and a robust Node.js/Express backend.
+A full-stack and production-ready clone of Airbnb featuring property listings, reviews, user authentication, and image uploads. The application is built with a modern Next.js frontend and a robust Node.js/Express backend.
 
 ## 🚀 Features
 
