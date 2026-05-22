@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import api from "../../lib/api";
+import { useAuth } from "../../context/AuthContext";
 import Flash from "../../components/Flash";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const redirectUrl = searchParams.get("redirect") || "/listings";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,21 +24,14 @@ export default function LoginPage() {
     }
 
     setIsSubmitting(true);
-    const params = new URLSearchParams();
-    params.append("username", form.username.value);
-    params.append("password", form.password.value);
+    const username = form.username.value;
+    const password = form.password.value;
 
-    try {
-      const res = await api.post("/login", params);
-      if (res.data?.success) {
-        localStorage.setItem("currUser", JSON.stringify(res.data.user));
-        window.location.href = res.data.redirectUrl || "/listings";
-      } else {
-        setError("Invalid username or password");
-        setIsSubmitting(false);
-      }
-    } catch (err) {
-      setError(err.response?.data?.error || "Login failed");
+    const res = await login(username, password);
+    if (res.success) {
+      window.location.href = redirectUrl;
+    } else {
+      setError(res.error || "Invalid username or password");
       setIsSubmitting(false);
     }
   };
@@ -104,5 +101,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center mt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-airbnb-red"></div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

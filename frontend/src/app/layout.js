@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Script from "next/script";
+import { AuthProvider } from "../context/AuthContext";
 
 export const metadata = {
   title: "WanderLust",
@@ -25,9 +26,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="flex flex-col min-h-screen text-gray-900 bg-white antialiased">
-        <Navbar />
-        <main className="container mx-auto px-4 flex-grow mt-6">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="container mx-auto px-4 flex-grow mt-6">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

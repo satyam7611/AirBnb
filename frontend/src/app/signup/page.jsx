@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import api from "../../lib/api";
+import { useAuth } from "../../context/AuthContext";
 import Flash from "../../components/Flash";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { signup } = useAuth();
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,23 +21,15 @@ export default function SignupPage() {
     }
 
     setIsSubmitting(true);
-    const params = new URLSearchParams();
-    params.append("username", form.username.value);
-    params.append("email", form.email.value);
-    params.append("password", form.password.value);
+    const username = form.username.value;
+    const email = form.email.value;
+    const password = form.password.value;
 
-    try {
-      const res = await api.post("/signup", params);
-
-      if (res.data?.success) {
-        localStorage.setItem("currUser", JSON.stringify(res.data.user));
-        window.location.href = res.data.redirectUrl || "/listings";
-      } else {
-        setError("Failed to signup");
-        setIsSubmitting(false);
-      }
-    } catch (err) {
-      setError(err.response?.data?.error || "Signup failed");
+    const res = await signup(username, email, password);
+    if (res.success) {
+      window.location.href = res.redirectUrl || "/listings";
+    } else {
+      setError(res.error || "Failed to signup");
       setIsSubmitting(false);
     }
   };

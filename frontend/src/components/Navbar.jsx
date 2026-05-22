@@ -1,32 +1,18 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import api from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const [currUser, setCurrUser] = useState(null);
+  const { user: currUser, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    const user = localStorage.getItem("currUser");
-    if (user) {
-      setCurrUser(JSON.parse(user));
-    }
-  }, []);
-
-  const handleLogout = async (e) => {
+  const handleLogout = (e) => {
     e.preventDefault();
-    try {
-      await api.get("/logout");
-      localStorage.removeItem("currUser");
-      setCurrUser(null);
-      window.location.href = "/listings"; // redirect to home
-    } catch (err) {
-      console.error(err);
-    }
+    logout();
   };
 
   const handleSearchSubmit = (e) => {
