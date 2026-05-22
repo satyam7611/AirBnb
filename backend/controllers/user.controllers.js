@@ -2,6 +2,16 @@
 const User=require('../models/user.models.js');
 const jwt = require('jsonwebtoken');
 
+const getCookieOptions = () => {
+  const isProd = process.env.NODE_ENV === 'production' || process.env.NODE_DEV === 'production';
+  return {
+    httpOnly: true,
+    secure: true, // Required for sameSite: 'none' and local development on modern browsers
+    sameSite: isProd ? 'none' : 'lax', // Use 'none' in production to allow cross-domain cookies
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  };
+};
+
 module.exports.renderSignupForm=(req,res)=>{
     if (req.accepts('json')) return res.json({ message: "Ready for signup" });
     res.render('../views/users/signup.ejs')
@@ -23,12 +33,7 @@ module.exports.signup=async(req,res,next)=>{
    );
 
    // Set HTTP-only Cookie
-   res.cookie('token', token, {
-     httpOnly: true,
-     secure: process.env.NODE_ENV === 'production',
-     sameSite: 'lax',
-     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-   });
+   res.cookie('token', token, getCookieOptions());
 
    req.flash('success','welcome to wanderlust')
    if (req.accepts('json')) return res.json({ success: true, redirectUrl: '/listings', user: registeredUser });
@@ -54,12 +59,7 @@ module.exports.login=async(req,res)=>{
    );
 
    // Set HTTP-only Cookie
-   res.cookie('token', token, {
-     httpOnly: true,
-     secure: process.env.NODE_ENV === 'production',
-     sameSite: 'lax',
-     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-   });
+   res.cookie('token', token, getCookieOptions());
 
    if (req.accepts('json')) {
       return res.json({ success: true, redirectUrl, user: req.user });
@@ -77,11 +77,8 @@ module.exports.renderLoginForm=(req,res)=>{
 
 module.exports.logout=(req,res,next)=>{
    // Clear HTTP-only Cookie
-   res.clearCookie('token', {
-     httpOnly: true,
-     secure: process.env.NODE_ENV === 'production',
-     sameSite: 'lax'
-   });
+   const { maxAge, ...clearOptions } = getCookieOptions();
+   res.clearCookie('token', clearOptions);
 
    req.logOut((error)=>{
       if(error){
