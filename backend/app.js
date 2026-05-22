@@ -3,6 +3,7 @@ if(process.env.NODE_DEV!="production"){
 }
 const express = require("express");
 const app = express();
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const path = require("path"); // ejs setup
 const cors = require("cors");
@@ -105,23 +106,43 @@ app.use(cors({
 }));
 
 
-app.use(session(sessionOptions))
-app.use(flash())
+app.use(cookieParser());
+app.use(session(sessionOptions));
+app.use(flash());
 
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 // use static serialize and deserialize of model for passport session support
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// JWT Verification Middleware
+const jwt = require("jsonwebtoken");
+app.use(async (req, res, next) => {
+  try {
+    const token = req.cookies?.token;
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || process.env.SECRET || "secret");
+      const user = await User.findById(decoded.id);
+      if (user) {
+        req.user = user;
+      }
+    }
+  } catch (err) {
+    console.error("JWT Verification in app.js failed:", err.message);
+    res.clearCookie("token");
+  }
+  next();
+});
+
 app.use((req,res,next)=>{
   res.locals.success=req.flash('success');
   res.locals.error=req.flash('error');
   res.locals.currUser=req.user;
-  next()
-})
+  next();
+});
 
 //pbkdf hashing algorithm uses here in passport
 

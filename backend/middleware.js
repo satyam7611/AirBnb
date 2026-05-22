@@ -3,12 +3,13 @@ const ExpressError=require('./utils/ExpressError.js');
 const {listingSchema, reviewSchema}=require('./schema.js') //joi use for schema validation 
 const Review=require('./models/review.models.js') //joi use for schema validation 
 module.exports.isLoggedIn=(req,res,next)=>{
-    // console.log(req)
-    // console.log(req.path,"..",req.originalUrl)
-     if(!req.isAuthenticated()){
+     if(!req.user){
+        if (req.accepts('json') || req.headers['content-type']?.includes('application/json')) {
+            return res.status(401).json({ success: false, error: "You must be logged in!" });
+        }
         req.session.redirectUrl=req.originalUrl;
-    req.flash("error","You must be logged in to create listings!")
-    return res.redirect("/login")
+        req.flash("error","You must be logged in!")
+        return res.redirect("/login")
   }
   next();
 }
