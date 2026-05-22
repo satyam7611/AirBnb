@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 // Shared JWT secret (matching the backend)
 const JWT_SECRET = process.env.JWT_SECRET || "fdgtieorudsocxo";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // List of protected routes that require authentication
@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
       await jwtVerify(token, secretKey);
       return NextResponse.next();
     } catch (err) {
-      console.error("JWT token verification failed in Middleware:", err);
+      console.error("JWT token verification failed in Proxy:", err);
       // Clean up the invalid cookie and redirect to login
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = "/login";
@@ -66,7 +66,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Config to specify which paths the middleware runs on
+// Config to specify which paths the proxy runs on
 export const config = {
   matcher: [
     "/listings/:path*",
