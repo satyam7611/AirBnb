@@ -8,13 +8,15 @@ const JWT_SECRET = process.env.JWT_SECRET || "fdgtieorudsocxo";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // List of protected routes that require authentication
-  const protectedRoutes = ["/listings", "/profile", "/reservations", "/host"];
-  
-  // Check if current route is a protected route
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  // Define which paths require authentication
+  // We make main listings page and details page PUBLIC (like real Airbnb)
+  // Only creation, editing, and profile/reservations/host require login
+  const isProtectedRoute =
+    pathname === "/listings/new" ||
+    (pathname.startsWith("/listings/") && pathname.endsWith("/edit")) ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/reservations") ||
+    pathname.startsWith("/host");
 
   // Extract the JWT token from the HTTP-only cookie
   const tokenCookie = request.cookies.get("token");
@@ -23,9 +25,8 @@ export async function proxy(request: NextRequest) {
   if (isProtectedRoute) {
     if (!token) {
       // Redirect to /login if token is missing
-      const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = "/login";
-      // Keep track of the original page to redirect back after login
+      // Using clean new URL constructs to prevent Vercel edge rewrite 404 bugs
+      const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -38,8 +39,7 @@ export async function proxy(request: NextRequest) {
     } catch (err) {
       console.error("JWT token verification failed in Proxy:", err);
       // Clean up the invalid cookie and redirect to login
-      const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = "/login";
+      const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       const response = NextResponse.redirect(loginUrl);
       response.cookies.delete("token");
@@ -54,8 +54,7 @@ export async function proxy(request: NextRequest) {
         const secretKey = new TextEncoder().encode(JWT_SECRET);
         await jwtVerify(token, secretKey);
         // User is already authenticated, redirect them to explorer listings page
-        const explorerUrl = request.nextUrl.clone();
-        explorerUrl.pathname = "/listings";
+        const explorerUrl = new URL("/listings", request.url);
         return NextResponse.redirect(explorerUrl);
       } catch (err) {
         // Token is invalid/expired, let them access login/signup
