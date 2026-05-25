@@ -39,7 +39,7 @@ router.get("/logout",userControllers.logout)
 // Validate and fetch current user session via cookies
 router.get("/me", (req, res) => {
   if (req.user) {
-    return res.json({ success: true, user: req.user });
+    return res.json({ success: true, user: req.user, token: req.cookies?.token });
   }
   return res.json({ success: false, user: null });
 });

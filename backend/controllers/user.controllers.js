@@ -36,7 +36,7 @@ module.exports.signup=async(req,res,next)=>{
    res.cookie('token', token, getCookieOptions());
 
    req.flash('success','welcome to wanderlust')
-   if (req.accepts('json')) return res.json({ success: true, redirectUrl: '/listings', user: registeredUser });
+   if (req.accepts('json')) return res.json({ success: true, redirectUrl: '/listings', user: registeredUser, token });
    res.redirect('/listings')
    }
    catch(e){
@@ -62,7 +62,7 @@ module.exports.login=async(req,res)=>{
    res.cookie('token', token, getCookieOptions());
 
    if (req.accepts('json')) {
-      return res.json({ success: true, redirectUrl, user: req.user });
+      return res.json({ success: true, redirectUrl, user: req.user, token });
    }
    res.redirect(redirectUrl)
 }

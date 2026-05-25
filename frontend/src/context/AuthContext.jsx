@@ -19,14 +19,21 @@ export function AuthProvider({ children }) {
         if (res.data && res.data.success) {
           setUser(res.data.user);
           localStorage.setItem("currUser", JSON.stringify(res.data.user));
+          // Synchronize token cookie on frontend domain
+          if (res.data.token) {
+            document.cookie = `token=${res.data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+          }
         } else {
           setUser(null);
           localStorage.removeItem("currUser");
+          // Clear token cookie if session is invalid
+          document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
         }
       } catch (err) {
         console.error("Auth status verification failed:", err);
         setUser(null);
         localStorage.removeItem("currUser");
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
       } finally {
         setLoading(false);
       }
@@ -44,6 +51,12 @@ export function AuthProvider({ children }) {
       if (res.data && res.data.success) {
         setUser(res.data.user);
         localStorage.setItem("currUser", JSON.stringify(res.data.user));
+        
+        // Save the token in a cookie on the frontend domain so Vercel middleware can access it
+        if (res.data.token) {
+          document.cookie = `token=${res.data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        }
+        
         // Redirect to protected route or listings
         return { success: true, redirectUrl: res.data.redirectUrl || "/listings" };
       } else {
@@ -60,6 +73,12 @@ export function AuthProvider({ children }) {
       if (res.data && res.data.success) {
         setUser(res.data.user);
         localStorage.setItem("currUser", JSON.stringify(res.data.user));
+        
+        // Save the token in a cookie on the frontend domain so Vercel middleware can access it
+        if (res.data.token) {
+          document.cookie = `token=${res.data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        }
+        
         return { success: true, redirectUrl: res.data.redirectUrl || "/listings" };
       } else {
         return { success: false, error: "Signup failed" };
@@ -74,6 +93,10 @@ export function AuthProvider({ children }) {
       await api.get("/logout");
       setUser(null);
       localStorage.removeItem("currUser");
+      
+      // Clear the frontend token cookie
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+      
       router.push("/listings");
       router.refresh();
     } catch (err) {
