@@ -87,6 +87,7 @@ const PORT = 8081;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // it will parse all the data that comes in the request
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
