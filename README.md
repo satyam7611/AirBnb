@@ -1,4 +1,4 @@
-# WanderLust - Airbnb Clone
+# WanderLust - Inspired by the Airbnb
 
 WanderLust is a full-stack, production-grade Airbnb clone that allows users to browse listings, explore details, write reviews, and host their own spaces. The application is built using a modern decoupled architecture, featuring a Next.js (App Router) frontend and an Express/Node.js REST API backend.
 
